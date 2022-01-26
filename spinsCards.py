@@ -10,10 +10,12 @@ class spinsCards:
 
     def calculatePins(self):
         self.replaceDash()
+        multiplier = 1
         pins = self.pins
         isSpare, isStrike = False, False
-        i = 0
+        strikesInARow = 0
         totalPuntuation = 0
+        multiplierInTwo = 1
         for bowlingToss in range(len(pins)):
             framePuntuation = 0
             
@@ -21,37 +23,48 @@ class spinsCards:
             if pins[bowlingToss] not in string.digits:
                 match pins[bowlingToss]:
                     case "/":
-                        framePuntuation = 10 - int(pins[bowlingToss-1])
+                        framePuntuation = (10 - int(pins[bowlingToss-1])) * multiplier
+                        strikesInARow = 0 
                         isSpare = True
                     case "X":
-                        framePuntuation = 10
+                        framePuntuation = 10 * multiplier 
+                        strikesInARow += 1
                         isStrike = True
             else:
-                framePuntuation = int(pins[bowlingToss])
+                framePuntuation = int(pins[bowlingToss]) * multiplier
+                strikesInARow = 0
             
+            multiplier = multiplierInTwo
+            multiplierInTwo = 1
+
             # Tirada siguiente  a "/"
             if isSpare and pins[bowlingToss] != "/":
                 framePuntuation *= 2
                 isSpare = False
 
             # Tirada siguiente a "X"
-            if i != 0:
-                framePuntuation *= 2
-                i -= 1
-                
-            totalPuntuation += framePuntuation
-
             if isStrike:
-                i += 2
-                isStrike = False
+                multiplier, multiplierInTwo = self.Strike(strikesInARow)
+            else:
+                multiplier = 1
+            totalPuntuation += framePuntuation
 
         print(totalPuntuation)
         return totalPuntuation
 
+    def Strike(self, strikesInARow):
+        multiplier = 1
+        multiplierInTwo = 2
+        if strikesInARow >= 2:
+            multiplier *= 3
+        else:
+            multiplier *= 2
+        return multiplier, multiplierInTwo
+
 if __name__ == '__main__':
     def prueba():
-        pins = "XXX"
-        total = 60
+        pins = "XXXXXXXXXXX9"
+        total = 299
         SpinsCards = spinsCards(pins)
         assert SpinsCards.calculatePins() == total
     prueba()
