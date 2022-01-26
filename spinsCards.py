@@ -1,6 +1,4 @@
-from operator import pos
 import string
-
 class SpinsCards:
     def __init__(self, pins):
         self.pins = pins
@@ -14,10 +12,9 @@ class SpinsCards:
     def calculatePins(self):
         self.replaceDash()
         pins = self.pins
-        multiplier, multiplierInTwo = 1, 1
         isSpare, isStrike = False, False
-        strikesInARow, totalPuntuation = 0, 0
-        frame = 0
+        strikesInARow, totalPuntuation, frame = 0, 0, 0
+        multiplier, multiplierInTwo = 1, 1
 
         for bowlingToss in range(len(pins)):
             framePuntuation = 0
