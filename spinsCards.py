@@ -1,58 +1,65 @@
+from operator import pos
 import string
 
-class spinsCards:
+class SpinsCards:
     def __init__(self, pins):
         self.pins = pins
 
-    # Sustituye los - por 0
+    # Sustituye los - por 0 y elimina los espacios en blanco
     def replaceDash(self):
         self.pins = self.pins.replace("-", "0")
+        self.pins = self.pins.replace(" ", "")
 
+    # Calcula la tirada de bolos
     def calculatePins(self):
         self.replaceDash()
-        multiplier = 1
         pins = self.pins
+        multiplier, multiplierInTwo = 1, 1
         isSpare, isStrike = False, False
-        strikesInARow = 0
-        totalPuntuation = 0
-        multiplierInTwo = 1
+        strikesInARow, totalPuntuation = 0, 0
+        frame = 0
+
         for bowlingToss in range(len(pins)):
             framePuntuation = 0
-            
             # Si es strike, spare o número
             if pins[bowlingToss] not in string.digits:
                 match pins[bowlingToss]:
                     case "/":
                         framePuntuation = (10 - int(pins[bowlingToss-1])) * multiplier
                         strikesInARow = 0 
+                        frame += 0.5
                         isSpare = True
                     case "X":
                         framePuntuation = 10 * multiplier 
                         strikesInARow += 1
+                        frame += 1
                         isStrike = True
             else:
                 framePuntuation = int(pins[bowlingToss]) * multiplier
                 strikesInARow = 0
+                frame += 0.5
             
             multiplier = multiplierInTwo
             multiplierInTwo = 1
 
             # Tirada siguiente  a "/"
-            if isSpare and pins[bowlingToss] != "/":
+            if isSpare and pins[bowlingToss] != "/" and frame <= 10:
                 framePuntuation *= 2
                 isSpare = False
 
             # Tirada siguiente a "X"
-            if isStrike:
-                multiplier, multiplierInTwo = self.Strike(strikesInARow)
+            if isStrike and frame <= 9:
+                multiplier, multiplierInTwo = self.strike(strikesInARow)
             else:
-                multiplier = 1
+                pass
+            isStrike = False
+
             totalPuntuation += framePuntuation
 
-        print(totalPuntuation)
         return totalPuntuation
 
-    def Strike(self, strikesInARow):
+    # Si es strike:
+    def strike(self, strikesInARow):
         multiplier = 1
         multiplierInTwo = 2
         if strikesInARow >= 2:
@@ -63,8 +70,8 @@ class spinsCards:
 
 if __name__ == '__main__':
     def prueba():
-        pins = "XXXXXXXXXXX9"
-        total = 299
-        SpinsCards = spinsCards(pins)
-        assert SpinsCards.calculatePins() == total
+        pins = "XXXXXXXXXXXX"
+        total = 300
+        spinsCards = SpinsCards(pins)
+        assert spinsCards.calculatePins() == total
     prueba()
