@@ -1,4 +1,3 @@
-import string
 class SpinsCards:
     def __init__(self, pins):
         self.pins = pins
@@ -17,10 +16,11 @@ class SpinsCards:
         multiplier, multiplierInTwo = 1, 1
 
         for bowlingToss in range(len(pins)):
+            actualToss = pins[bowlingToss]
             framePuntuation = 0
-            
+
             # Si es strike, spare o número
-            match pins[bowlingToss]:
+            match actualToss:
                 case "/":
                     framePuntuation = (10 - int(pins[bowlingToss-1])) * multiplier
                     strikesInARow = 0 
@@ -32,7 +32,7 @@ class SpinsCards:
                     frame += 1
                     isStrike = True
                 case _:
-                    framePuntuation = int(pins[bowlingToss]) * multiplier
+                    framePuntuation = int(actualToss) * multiplier
                     strikesInARow = 0
                     frame += 0.5
             
@@ -40,7 +40,7 @@ class SpinsCards:
             multiplierInTwo = 1
 
             # Tirada siguiente  a "/"
-            if isSpare and pins[bowlingToss] != "/" and frame <= 10:
+            if isSpare and actualToss != "/" and frame <= 10:
                 framePuntuation *= 2
                 isSpare = False
 
@@ -49,10 +49,9 @@ class SpinsCards:
                 multiplier, multiplierInTwo = self.strike(strikesInARow)
             else:
                 pass
+
             isStrike = False
-
             totalPuntuation += framePuntuation
-
         return totalPuntuation
 
     # Si es strike:
@@ -67,8 +66,8 @@ class SpinsCards:
 
 if __name__ == '__main__':
     def prueba():
-        pins = "12345123451234512345"
-        total = 60
+        pins = "XXX3454"
+        total = 86
         spinsCards = SpinsCards(pins)
         assert spinsCards.calculatePins() == total
     prueba()
