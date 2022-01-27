@@ -18,23 +18,23 @@ class SpinsCards:
 
         for bowlingToss in range(len(pins)):
             framePuntuation = 0
+            
             # Si es strike, spare o número
-            if pins[bowlingToss] not in string.digits:
-                match pins[bowlingToss]:
-                    case "/":
-                        framePuntuation = (10 - int(pins[bowlingToss-1])) * multiplier
-                        strikesInARow = 0 
-                        frame += 0.5
-                        isSpare = True
-                    case "X":
-                        framePuntuation = 10 * multiplier 
-                        strikesInARow += 1
-                        frame += 1
-                        isStrike = True
-            else:
-                framePuntuation = int(pins[bowlingToss]) * multiplier
-                strikesInARow = 0
-                frame += 0.5
+            match pins[bowlingToss]:
+                case "/":
+                    framePuntuation = (10 - int(pins[bowlingToss-1])) * multiplier
+                    strikesInARow = 0 
+                    frame += 0.5
+                    isSpare = True
+                case "X":
+                    framePuntuation = 10 * multiplier 
+                    strikesInARow += 1
+                    frame += 1
+                    isStrike = True
+                case _:
+                    framePuntuation = int(pins[bowlingToss]) * multiplier
+                    strikesInARow = 0
+                    frame += 0.5
             
             multiplier = multiplierInTwo
             multiplierInTwo = 1
@@ -67,8 +67,8 @@ class SpinsCards:
 
 if __name__ == '__main__':
     def prueba():
-        pins = "XXXXXXXXXXXX"
-        total = 300
+        pins = "12345123451234512345"
+        total = 60
         spinsCards = SpinsCards(pins)
         assert spinsCards.calculatePins() == total
     prueba()
